@@ -22,9 +22,13 @@ const userLogin = async (req, res) => {
       }
 
       // Generate JWT token
-      const token = jwt.sign({ email }, process.env.JWT_SECRET, {
-         expiresIn: "1h",
-      });
+      const token = jwt.sign(
+         { name: user.name, email },
+         process.env.JWT_SECRET,
+         {
+            expiresIn: "1h",
+         }
+      );
       res.json({ token: token });
    } catch {
       res.status(500).json({ error: "Internal server error" });
