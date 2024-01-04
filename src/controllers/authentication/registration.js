@@ -3,13 +3,13 @@ const UserModel = require("../../schemas/userSchema");
 
 const userRegistration = async (req, res) => {
    try {
-      const { email, password } = req.body;
+      const { name, email, password } = req.body;
 
       // Hash the password
       const hashedPassword = await bcrypt.hash(password, 10);
 
       // Create new user
-      const user = new UserModel({ email, password: hashedPassword });
+      const user = new UserModel({ name, email, password: hashedPassword });
 
       // Save user to database
       await user.save();
