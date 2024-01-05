@@ -6,6 +6,7 @@ const port = process.env.PORT || 3000;
 const cors = require("cors");
 const database = require("./src/database");
 const authRoute = require("./src/routes/authentication");
+const rootRoute = require("./src/routes/root");
 require("dotenv").config();
 
 // Use middleware
@@ -23,9 +24,7 @@ app.use(express.json());
 database();
 
 // application routes
-app.get("/", (req, res) => {
-   res.send("Server is running");
-});
+app.use("/", rootRoute);
 app.use("/auth", authRoute);
 
 // Listen server
