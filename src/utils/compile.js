@@ -4,8 +4,8 @@ const getCompileCommand = (language) => {
          return "python";
       case "javascript":
          return "node";
-      case "go":
-         return "go run";
+      case "rust":
+         return "cargo run";
       case "ruby":
          return "ruby";
       default:

@@ -5,7 +5,8 @@ const saveHistory = async (req, res) => {
       const bodyData = req.body;
       await HistoryModel(bodyData).save();
       res.status(201).json({ message: "History added" });
-   } catch {
+   } catch (err) {
+      console.log(err);
       res.status(500).json({ error: "Internal server error" });
    }
 };

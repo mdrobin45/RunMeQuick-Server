@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { exec } = require("child_process");
+const { spawn } = require("child_process");
 const getCompileCommand = require("../../utils/compile");
 
 const codeCompiler = async (req, res) => {
@@ -12,7 +12,7 @@ const codeCompiler = async (req, res) => {
             .json({ error: "Code and language is required" });
       }
 
-      // const filename = `code.${language.toLowerCase()}`;
+      const filename = `code.${language.toLowerCase()}`;
 
       const compileCommand = getCompileCommand(language);
 
@@ -21,18 +21,37 @@ const codeCompiler = async (req, res) => {
       }
 
       // Temporary file with code
-      // fs.writeFileSync(filename, code);
+      fs.writeFileSync(filename, code);
+
+      let outputData = "";
+      let errorData = "";
 
       // Execute code
-      exec(compileCommand, { code }, (error, stdout, stderr) => {
-         // Delete temporary tile
-         // fs.unlinkSync(filename);
-         console.log(20);
-         if (error) {
-            return res.status(500).json({ error: stderr });
-         }
+      const process = spawn(compileCommand, [filename]);
 
-         res.status(200).json({ response: stdout });
+      // Normal output
+      process.stdout.on("data", (chunk) => {
+         const readableChunk = chunk.toString("utf8");
+         outputData += readableChunk;
+      });
+
+      // Error output
+      process.stderr.on("data", (chunk) => {
+         const readableChunk = chunk.toString("utf8");
+         errorData += readableChunk;
+      });
+
+      process.on("exit", () => {
+         if (errorData) {
+            res.status(200).json({ stderr: btoa(errorData) });
+         } else {
+            res.status(200).json({ stdout: btoa(outputData) });
+         }
+      });
+
+      process.on("error", (error) => {
+         console.log(error);
+         res.status(500).json({ error: "Internal server error" });
       });
    } catch (err) {
       console.log(err);
