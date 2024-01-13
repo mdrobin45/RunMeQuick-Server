@@ -5,7 +5,7 @@ const getCompileCommand = (language) => {
       case "javascript":
          return "node";
       case "rust":
-         return "cargo run";
+         return "rust";
       case "ruby":
          return "ruby";
       default:

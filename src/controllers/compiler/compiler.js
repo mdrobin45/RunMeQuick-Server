@@ -43,14 +43,16 @@ const codeCompiler = async (req, res) => {
 
       process.on("exit", () => {
          if (errorData) {
-            res.status(200).json({ stderr: btoa(errorData) });
+            res.status(201).json({ stderr: btoa(errorData) });
          } else {
-            res.status(200).json({ stdout: btoa(outputData) });
+            res.status(201).json({ stdout: btoa(outputData) });
          }
       });
 
       process.on("error", (error) => {
-         console.log(error);
+         if (error.code === "ENOENT") {
+            return res.status(404).json({ error: "An error occurred" });
+         }
          res.status(500).json({ error: "Internal server error" });
       });
    } catch (err) {
