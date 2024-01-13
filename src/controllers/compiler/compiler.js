@@ -12,13 +12,12 @@ const codeCompiler = async (req, res) => {
             .json({ error: "Code and language is required" });
       }
 
-      const filename = `code.${language.toLowerCase()}`;
-
-      const compileCommand = getCompileCommand(language);
-
-      if (!compileCommand) {
+      const languageInfo = getCompileCommand(language);
+      if (!languageInfo) {
          return res.status(400).json({ error: "Unsupported language" });
       }
+
+      const filename = `code.${languageInfo.ext}`;
 
       // Temporary file with code
       fs.writeFileSync(filename, code);
@@ -27,7 +26,10 @@ const codeCompiler = async (req, res) => {
       let errorData = "";
 
       // Execute code
-      const process = spawn(compileCommand, [filename]);
+      const process =
+         language === "go"
+            ? spawn(languageInfo.command, [languageInfo.exeCommand, filename])
+            : spawn(languageInfo.command, [filename]);
 
       // Normal output
       process.stdout.on("data", (chunk) => {
