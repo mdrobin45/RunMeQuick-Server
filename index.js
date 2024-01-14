@@ -15,7 +15,7 @@ require("dotenv").config();
 app.use(
    cors({
       credentials: true,
-      origin: process.env.LOCAL_SITE,
+      origin: process.env.CORS_ORIGIN,
    })
 );
 

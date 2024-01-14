@@ -4,7 +4,7 @@ const getCompileCommand = require("../../utils/compile");
 
 const codeCompiler = async (req, res) => {
    try {
-      const { code, language } = req.body;
+      const { code, language, cancelExe } = req.body;
 
       if (!code || !language) {
          return res
@@ -57,10 +57,15 @@ const codeCompiler = async (req, res) => {
          }
          res.status(500).json({ error: "Internal server error" });
       });
+
+      // const cancelProcess = () => {
+      //    const currentProcess = process.kill();
+      //    return currentProcess;
+      // };
    } catch (err) {
       console.log(err);
       res.status(500).json({ error: "Internal server error" });
    }
 };
 
-module.exports = codeCompiler;
+module.exports = { codeCompiler };
